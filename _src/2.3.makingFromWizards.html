@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<META HTTP-EQUIV="REFRESH" CONTENT="60">
+	<script src="js/jquery-1.4.4.js"></script>
+	
+	<style>
+	* { padding:0px; margin:0px; }
+	body { font-family:Tahoma, sans-serif; margin:10px; }
+	a { text-decoration: none; }
+	.wizard { width:300px; overflow:hidden; border:1px solid black; }
+	.wizardNavigation { overflow:hidden;  border-bottom:1px solid #D2D2D2;  }
+	.wizardNavigation li { float:left; list-style:none; padding:10px; cursor:default; color:#D2D2D2; }
+	.wizardNavigation li.active { color:#000; }
+	
+	.wizardBody { clear:both; padding:20px; }
+	.wizardActionButtons { padding:10px; border-top:1px solid #D2D2D2; }
+	.wizardActionButtons .back { float:left; cursor:pointer; }
+	.wizardActionButtons .next,
+	.wizardActionButtons .finish { float:right; cursor:pointer; }
+	.wizard .disabled { color:#D2D2D2; }
+	</style>
+	
+	<script>
+		var submitThePage = function (buttonDirection){
+			var $currentTab = $('.wizardNavigation li.active');
+	
+			if(buttonDirection == 'next')
+				var $actionTab = $currentTab.next('li');
+			else	
+				var $actionTab = $currentTab.prev('li');
+			
+			var target = "ajax/"+ $actionTab.attr('id') +".php";
+			
+			var jqxhr = $.get(target, {'param':'test'}, function(data) {
+				if(data){
+					if($actionTab){
+						$currentTab.removeClass('active');
+						$actionTab.addClass('active');
+					} 
+					
+					displayFinishButton($actionTab.hasClass('last'));
+					displayNextButton(!$actionTab.hasClass('last'));
+					displayBackButton(!$actionTab.hasClass('first'));
+					
+					$('.wizardBody').html(data);
+				}
+			});
+		}
+		
+		var displayBackButton = function(enabled){ enabled == true ? $('.back').show() : $('.back').hide();}
+		var displayNextButton = function(enabled){ enabled == true ? $('.next').show() : $('.next').hide(); }
+		var displayFinishButton = function(enabled){ enabled == true ? $('.finish').show() : $('.finish').hide();}
+	</script>
+</head>
+<body>
+<div class="wizard">
+	<ul class="wizardNavigation">
+		<li class="active first" id="step1">Step 1</li>
+		<li id="step2">Step 2</li>
+		<li id="step3" class="last">Step 3</li>
+	</ul>
+	<div class="wizardBody">STEP 1</div>
+	<div class="wizardActionButtons">
+		<a href="javascript:submitThePage('back');" class="back" style="display:none;">Back</a>
+		<a href="" class="finish" style="display:none;">Finish</a>
+		<a href="javascript:submitThePage('next');" class="next">Next</a>
+	</div>
+</div>
+</body>
+</html>

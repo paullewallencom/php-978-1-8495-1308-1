@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="js/jquery-1.4.4.js"></script>
+	<script>
+		$(document).ready(function(){
+			// our JS godness
+		});
+	</script>
+	
+	<style>
+	body 		{ font-family: Calibri, Verdana, sans-serif; font-size:13px; }
+	form		{ width:450px;}
+	label 		{ float:left; width:100px; padding:5px; }
+	.fieldRow 	{ overflow:hidden; margin:20px 10px; }
+	.buttons 	{ text-align:center;}
+	
+	input[type=text], textarea	{ 
+			font-family: Calibri, Verdana, sans-serif; font-size:13px;
+			width:200px;
+			border:1px solid black;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			padding:5px;
+		}
+	</style>
+</head>
+<body>
+	<form action="#">
+		<div class="fieldRow">
+			<label>Your Name:</label>
+			<input type="text" name="name" id="name" class="mandatory" />
+		</div>
+		
+		<div class="fieldRow">
+			<label>Your e-mail:</label>
+			<input type="text" name="email" id="email" class="mandatory email" />
+		</div>
+		
+		<div class="fieldRow">
+			<label>Website:</label>
+			<input type="text" name="url" id="url" class="mandatory url" />
+		</div>
+		
+		<div class="fieldRow">
+			<label>Mobile Phone:</label>
+			<input type="text" name="phone" id="phone" class="phone"/>
+		</div>
+		
+		<div class="fieldRow">
+			<label>Your Message:</label>
+			<textarea name="message" id="message" class="mandatory"></textarea>
+		</div>
+		
+		<div class="fieldRow buttons">
+			<input type="reset" value="Clear" />
+			<input type="submit" value="Send" />
+		</div>
+	</form>
+</body>
+</html>

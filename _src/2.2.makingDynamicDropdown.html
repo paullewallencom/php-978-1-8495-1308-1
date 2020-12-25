@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<META HTTP-EQUIV="REFRESH" CONTENT="60">
+
+	<style>
+		body	{ font-family: Tahoma, Arial, sans-serif; font-size:13px; }
+		label 	{ width:50px; display:block; float:left; padding:4px; }
+		form	{ width:290px; }
+		input, textarea	{ 
+			font-family: Tahoma, Arial, sans-serif;
+			width:200px;
+			border:1px solid black;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			float:right;
+			padding:5px;
+			
+		}
+		input[type=submit] { cursor:pointer; background-color:green; color:#FFF; }
+		input[disabled=disabled] { background-color:#d1d1d1; }
+		.fieldRow { margin:10px 10px; overflow:hidden; }
+		.validationFailed { border: 1px solid red; }
+		.validationPassed { border: 1px solid green; }
+		
+		.datalistPlaceHolder {
+			width:200px;
+			border:1px solid black;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			float:right;
+			padding:5px;
+			display:none;
+		}
+		
+		ul.datalistPlaceHolder li { list-style: none; cursor:pointer; padding:4px; }
+		ul.datalistPlaceHolder li:hover { color:#FFF; background-color:#000; }
+	</style>
+
+	<script src="js/jquery-1.4.4.js"></script>
+	
+	<script>
+		$(document).ready(function(){	
+			ajaxDropdownInit();
+		});
+		
+		var timerId; 
+
+		var ajaxDropdownInit =  function(){
+			$('.ajaxDropdown').keyup(function() {
+				var string = $(this).val();
+				clearTimeout (timerId);
+				timerId = setTimeout(function(){    
+					var jqxhr = $.get("ajax/dropDownList.php", {'string':string}, function(data) {
+						if(data)
+							$('.datalistPlaceHolder').show().html(data);
+						else
+							$('.datalistPlaceHolder').hide()
+					});	
+				}, 500 ); 
+			});
+			
+			$('.datalistPlaceHolder li').live('click',function(){
+				console.log('item clicked');
+			});
+		}
+	</script>
+</head>
+<body>
+
+	<h1>Dynamic Dropdown</h1>
+
+	<form class="simpleValidation">
+		<div class="fieldRow">
+			<label>Name:</label>
+			<div class="ajaxDropdownPlaceHolder">
+				<input type="text" id="name" name="name" class="ajaxDropdown" AUTOCOMPLETE="OFF" />	
+				<ul class="datalistPlaceHolder"></ul>
+			</div>
+		</div>
+	</form>
+
+</body>
+</html>

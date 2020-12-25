@@ -1,0 +1,43 @@
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+    <title>Signal Example</title> 
+	<script type="text/javascript" src="js/MochiKit/MochiKit.js"></script> 
+	<script>
+
+connect(document, 'onkeydown', 
+    function(e) {        
+        var key = e.key();
+        replaceChildNodes('onkeydown_code', key.code);
+        replaceChildNodes('onkeydown_string', key.string);            
+    });
+
+connect(document, 'onkeypress', 
+    function(e) {
+        var key = e.key();
+        replaceChildNodes('onkeypress_code', key.code);
+        replaceChildNodes('onkeypress_string', key.string);
+    });
+
+	</script> 
+</head> 
+<body>
+	<table> 
+        <tr> 
+            <th>Event</th> 
+            <th>Key Code</th> 
+            <th>Key String</th> 
+        </tr> 
+        <tr> 
+            <td>onkeydown</td> 
+            <td id="onkeydown_code">-</td> 
+            <td id="onkeydown_string">-</td> 
+        </tr> 
+        <tr> 
+            <td>onkeypress</td> 
+            <td id="onkeypress_code">-</td> 
+            <td id="onkeypress_string">-</td> 
+        </tr> 
+    </table>  
+</body> 
+</html> 

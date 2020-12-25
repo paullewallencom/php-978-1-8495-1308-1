@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="js/jquery-1.4.4.js"></script>
+	<script>
+		$(document).ready(function(){
+			$('ul.ratingStars li.active').prevAll().addClass('active');
+			
+			$('ul.ratingStars li').each(function(){
+				var $item = $(this);
+				var $itemContainer = $item.parents('ul.ratingStars');
+				var containerID = $itemContainer.attr('id');
+				var $itemsAll = $itemContainer.find('li');
+				
+				$item
+				.mouseover(function(){
+					$itemsAll.addClass('default');
+					$item.prevAll().addClass('highlighted');
+				})
+				
+				.mouseout(function(){
+					$itemsAll.removeClass('default').removeClass('highlighted');
+				})
+			
+				.bind('click', function(){
+					var itemIndex = $itemsAll.index(this);
+					
+					$.post('ajax/saveRating.php', {'itemID':containerID, 'itemValue': itemIndex}, function(data) {
+						if(data && data.status == "100"){
+							$item.addClass('active').removeClass('highlighted');
+							$item.nextAll().removeClass('active');
+							$item.prevAll().addClass('active');
+						} else {
+							alert('Error!');
+						} 
+					}, "json");
+				});	
+			});
+		});
+	</script>
+	
+	<style>
+	label, ul { float:left; }
+	.fieldRow { clear:both;  margin:5px 0px; overflow:hidden; }
+	ul.ratingStars { list-style:none; margin:0px 0px; overflow:hidden; }
+	ul.ratingStars li { float:left; width:16px; height:16px; background:url('icons/star.gif') no-repeat left top; cursor:pointer; }
+	ul.ratingStars li.active { background-position: 0px -32px; }
+	ul.ratingStars li.default { background-position: 0px 0px; }
+	ul.ratingStars li.highlighted, 
+	ul.ratingStars li:hover { background-position: 0px -16px; }
+	</style>
+</head>
+<body>
+	<h1>Creating Five Stars Rating System</h1>
+	<div class="fieldRow">
+		<label>Book 123A</label>
+		<ul id="book-123a" class="ratingStars">
+			<li></li>
+			<li  class="active"></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<div class="fieldRow">
+		<label>Book 123B</label>
+		<ul id="book-123b" class="ratingStars">
+			<li  class="active"></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<div class="fieldRow">
+		<label>Book 123C</label>
+		<ul id="book-123c" class="ratingStars">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li  class="active"></li>
+		</ul>
+	</div>
+	<div id="placeHolder"></div>
+</body>
+</html>

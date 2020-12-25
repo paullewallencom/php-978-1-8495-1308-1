@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+	<form id="loginForm">
+		<label for="username">Username: </label>
+		<input type="text" id="username" name="username" />
+		<br />
+		<label for="password">Password:</label>
+		<input type="password" id="password"  name="password"/>
+		<br /><br />
+		<input type="submit" value="Sign In" id="submit" />
+	</form>
+	
+	<script src="js/prototype.js"></script>
+	
+	<script>
+
+	$('submit').observe('click', login); 
+
+	function login(e) {
+		//do something
+		Event.stop(e);
+		
+		var url = "ajax/login.php"; 
+		
+		new Ajax.Request(url, {
+			method: 'post',
+			parameters: { 
+				username: document.getElementById('username').value,
+				password: document.getElementById('password').value },
+			onSuccess: process,
+			onFailure: function() { 
+				alert("There was an error with the connection"); 
+			}
+		});
+	}
+	
+	function process(transport) {
+		var response = transport.responseText;
+		if(response == 'proceed'){
+			$('loginForm').hide();
+			var my_div = document.createElement('div');
+			my_div.appendChild(document.createTextNode("You are logged in!"));
+			document.body.appendChild(my_div);
+		}
+		else
+			alert("Sorry, your username and password don`t match.");  
+	}
+	</script>
+</body>
+</html>

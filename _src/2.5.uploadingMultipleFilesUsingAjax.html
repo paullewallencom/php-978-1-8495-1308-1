@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Multiple File Upload With Progress Bar - Web Developer Plus Demos</title>
+	
+	<script src="js/jquery-1.4.4.js"></script>
+	<script src="js/swfupload/swfupload.js"></script>
+	<script src="js/jquery.swfupload.js"></script>
+	<script>
+
+	$(function(){
+		$('#swfupload-control').swfupload({
+			upload_url: "upload-file.php",
+			file_post_name: 'uploadfile',
+			file_size_limit : "1024",
+			file_types : "*.jpg;*.png;*.gif",
+			file_types_description : "Image files",
+			file_upload_limit : 5,
+			flash_url : "js/swfupload/swfupload.swf",
+			button_image_url : 'js/swfupload/wdp_buttons_upload_114x29.png',
+			button_width : 114,
+			button_height : 29,
+			button_placeholder : $('#button')[0],
+			debug: false
+		})
+			.bind('fileQueued', function(event, file){
+				var listitem='<li id="'+file.id+'" >'+
+					file.name+' ('+Math.round(file.size/1024)+' KB) <span class="progressvalue" ></span>'+
+					'<div class="progressbar" ><div class="progress" ></div></div>'+
+					'<p class="status" >Pending</p>'+
+					'</li>';
+				$('#log').append(listitem);
+
+				// start the upload since it's queued
+				$(this).swfupload('startUpload');
+			})
+			.bind('fileQueueError', function(event, file, errorCode, message){
+				alert('Size of the file '+file.name+' is greater than limit');
+			})
+			.bind('fileDialogComplete', function(event, numFilesSelected, numFilesQueued){
+				$('#queuestatus').text('Files Selected: '+numFilesSelected+' / Queued Files: '+numFilesQueued);
+			})
+			.bind('uploadStart', function(event, file){
+				$('#log li#'+file.id).find('p.status').text('Uploading...');
+				$('#log li#'+file.id).find('span.progressvalue').text('0%');
+			})
+			.bind('uploadProgress', function(event, file, bytesLoaded){
+				//Show Progress
+				var percentage=Math.round((bytesLoaded/file.size)*100);
+				$('#log li#'+file.id).find('div.progress').css('width', percentage+'%');
+				$('#log li#'+file.id).find('span.progressvalue').text(percentage+'%');
+			})
+			.bind('uploadSuccess', function(event, file, serverData){
+				var item=$('#log li#'+file.id);
+				item.find('div.progress').css('width', '100%');
+				item.find('span.progressvalue').text('100%');
+				item.addClass('success').find('p.status').html('File was uploaded successfully.');
+			})
+			.bind('uploadComplete', function(event, file){
+				$(this).swfupload('startUpload');
+			})
+		
+	});	
+
+	</script>
+	
+	
+<style type="text/css" >
+#swfupload-control p { margin:10px 5px; }
+#log { }
+#log li { list-style:none; margin:2px; padding:10px; font-size:12px; 
+	color:#333; background:#fff; position:relative; border:1px solid black;
+	-moz-border-radius: 5px; border-radius: 5px;}
+#log li .progressbar { height:5px; background:#fff; }
+#log li .progress { background:#999; width:0%; height:5px; }
+#log li p { margin:0; line-height:18px; }
+#log li.success { border:1px solid #339933; background:#ccf9b9; }
+#log li span.cancel { position:absolute; top:5px; right:5px; width:20px; height:20px; 
+	background:url('js/swfupload/cancel.png') no-repeat; cursor:pointer; }
+</style>
+
+</head>
+<body>
+
+<h1>Uploading Multiple Files Using Ajax</h1>
+	
+<div id="swfupload-control">
+	<p>Upload files.</p>
+	<input type="button" id="button" value="Upload" />
+	<p id="queuestatus" ></p>
+	<ol id="log"></ol>
+</div>
+
+</body>
+</html>

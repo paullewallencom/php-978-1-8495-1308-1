@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="js/jquery-1.4.4.js"></script>
+	<script>
+		$(document).ready(function(){
+			$.getJSON('json/requests.json', function(data) {
+				buildHeader(data);
+				buildBody(data);
+			});
+		});
+		
+		var buildHeader = function(data){
+			var keys = [];
+			var $headRow = $('<tr />'); 
+			for(var key in data[0]){
+				keys.push(key);
+				if(key=="id")
+					var $cell = $('<th />');
+				else
+					var $cell = $('<th>'+key+'</th>');
+				
+				$cell.appendTo($headRow);
+			}
+			$headRow.appendTo($('.tableContainer table thead'));
+		}
+		
+		var buildBody = function(data){	
+			for(var i = 0; i < data.length; i++){
+				var dataRow = data[i];
+				var $tableRow = $('<tr />');
+				for(var key in dataRow){
+					var $cell = $('<td />');
+					
+					switch(key){
+						default:
+							$cell.html(dataRow[key]);
+							break;
+						case 'id':
+							var $checkbox = $('<input type="checkbox" name="select['+dataRow[key]+']" />');
+							$checkbox.appendTo($cell);
+							break;
+						case 'date':
+							$cell.html(dataRow[key]);
+							$cell.addClass('textAlignR');
+							break;
+					
+					}
+					$cell.appendTo($tableRow);
+				}
+				
+				if(i % 2 == 0)
+					$tableRow.addClass('odd');
+				
+				$tableRow.appendTo($('.tableContainer table tbody'));
+			}
+		}
+	</script>
+	
+	<style>
+	* { margin:0px; padding:0px; }
+	body { font-family: Helvetica, Tahoma, sans-serif; font-size: 11px; padding:30px; }
+	.tableContainer { width:900px; }
+	.tableToolbar { background-color:#EEFFEE; height:20px; padding:5px; }
+	table { border-collapse: collapse; width:100%; }
+	table thead tr { }
+	table th { font-size:13px; background-color:#AAFFAA; padding:4px;  }
+	table tr td { /*border:1px solid #339933;*/ padding:4px; }
+	table tr.odd td { background-color:#E3E3E3; }
+	.floatr { float:right;}
+	.textAlignR { text-align: right; }
+	</style>
+</head>
+<body>
+
+
+<div class="tableContainer">
+	<div class="tableToolbar">
+		Select 
+			<a href="#" class="selectAll">All</a>, 
+			<a href="#" class="selectNone">None</a>, 
+			<a href="#" class="selectInverse">Inverse</a>
+	</div>
+	<table>
+		<thead></thead>
+		<tbody></tbody>
+	</table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<META HTTP-EQUIV="REFRESH" CONTENT="60">
+
+	<style>
+		body	{ font-family: Tahoma, Arial, sans-serif; }
+		label 	{ width:70px; display:block; float:left; }
+		form	{ width:320px; }
+		input, textarea	{ 
+			font-family: Tahoma, Arial, sans-serif;
+			width:200px;
+			border:1px solid black;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			float:right;
+			padding:5px;
+			font-size:11px;
+		}
+		input[type=submit] { cursor:pointer; background-color:green; color:#FFF; }
+		input[disabled=disabled], input[disabled] { background-color:#d1d1d1; }
+		.fieldRow { margin:10px 10px; overflow:hidden; }
+		.failed { border: 1px solid red; }
+
+	</style>
+
+	<script src="js/jquery-1.4.4.js"></script>
+	
+	<script>
+		$(document).ready(function(){
+			validateInputsOnKeyUp();
+		});
+		
+		var validateInputsOnKeyUp =  function(){
+			$('.mandatory').keyup(function() {
+				ajaxValidation($(this));
+			});
+		}
+		
+		var ajaxValidation = function(object){
+			var $this = $(object);
+			var param = $this.attr('name');
+			var value = $this.val();
+			var jqxhr = $.get("ajax/inputValidation.php", {'param':param, 'value':value }, function(data) {
+				if(data){
+					validateMandatoryInputs();
+				} else {
+					$this.addClass('failed');
+				}
+			});		
+		}
+		
+		var validateMandatoryInputs = function (){
+			var numberOfMissingInputs = 0;
+			$('.mandatory').each(function(index){		
+				var $item = $(this);
+				var itemValue = $item.val();
+				
+				if(itemValue.length) {
+					$item.removeClass('failed');
+				} else {
+					$item.addClass('failed');
+					numberOfMissingInputs++;
+				}	
+			});
+			
+			var $submitButton = $('#formSubmitter');
+			
+			if(numberOfMissingInputs > 0){
+				$submitButton.attr("disabled", true);
+			} else {
+
+				$submitButton.removeAttr('disabled');
+			}
+		}
+	</script>
+</head>
+<body>
+
+	<h1>Validating form using Ajax</h1>
+
+	<form class="simpleValidation">
+		<div class="fieldRow">
+			<label>Title *</label>
+			<input type="text" id="title" name="title" class="mandatory"/>
+		</div>
+		<div class="fieldRow">
+			<label>Url</label>
+			<input type="text" id="url" name="url" value="http://" />
+		</div>
+		<div class="fieldRow">
+			<label>Labels</label>
+			<input type="text" id="labels" name="labels"/>
+		</div>
+		<div class="fieldRow">
+			<label>Text *</label>
+			<textarea id="textarea" class="mandatory"></textarea>
+		</div>
+		<div class="fieldRow">
+			<input type="submit" id="formSubmitter" value="Submit" disabled="disabled" />
+		</div>
+	</form>
+
+</body>
+</html>
